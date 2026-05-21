@@ -1,0 +1,24 @@
+{
+  "name": "pinterest-clone",
+  "version": "1.0.0",
+  "description": "Vue (CDN) web app — a Pinterest-style wallpaper gallery powered by the Pexels API.",
+  "main": "app.js",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DLtru/Pinterest-clone.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/DLtru/Pinterest-clone/issues"
+  },
+  "homepage": "https://github.com/DLtru/Pinterest-clone#readme",
+  "devDependencies": {
+    "vitest": "^4.1.5"
+  }
+}

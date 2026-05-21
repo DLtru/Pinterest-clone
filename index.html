@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pinterest Wallpaper Clone</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f7fb;
+        --card: #ffffff;
+        --text: #222;
+        --muted: #6b7280;
+        --accent: #e60023;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(246, 247, 251, 0.95);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      }
+
+      .header-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 16px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .title {
+        font-weight: 700;
+        font-size: 22px;
+      }
+
+      form.search {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .search input {
+        flex: 1;
+        padding: 12px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        background: #fff;
+        font-size: 15px;
+      }
+
+      .search button,
+      .search .reset {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 16px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .search button {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .search .reset {
+        background: #fff;
+        color: var(--text);
+        border: 1px solid rgba(0, 0, 0, 0.12);
+      }
+
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .masonry {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        background: var(--card);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .card figure {
+        margin: 0;
+        position: relative;
+        aspect-ratio: 4 / 3;
+      }
+
+      .card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .download {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        text-decoration: none;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .card .meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 14px 14px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .card .meta a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .status {
+        margin: 16px 0;
+        text-align: center;
+        color: var(--muted);
+      }
+
+      .error {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 12px 14px;
+        border-radius: 12px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <div class="header-inner">
+          <div class="title">Pinterest mobile wallpapers</div>
+          <form class="search" @submit.prevent="handleSearch">
+            <input
+              v-model.trim="searchTerm"
+              type="search"
+              placeholder="Search wallpapers, e.g. ocean, mountains, neon"
+            />
+            <button type="submit">Search</button>
+            <button type="button" class="reset" @click="resetSearch" v-if="searchTerm">
+              Reset
+            </button>
+          </form>
+        </div>
+      </header>
+
+      <main>
+        <div class="status" v-if="!photos.length && !isLoading && !error">
+          Nothing found. Try a different query.
+        </div>
+        <div class="error" v-if="error">{{ error }}</div>
+
+        <section class="masonry">
+          <article class="card" v-for="photo in photos" :key="photo.id">
+            <figure>
+              <img :src="photo.src.large" :alt="photo.alt || 'Pexels photo'" loading="lazy" />
+              <a
+                class="download"
+                :href="photo.src.original"
+                target="_blank"
+                rel="noopener"
+              >
+                Download
+              </a>
+            </figure>
+            <div class="meta">
+              <span>Photo:</span>
+              <a :href="photo.photographer_url" target="_blank" rel="noopener">
+                {{ photo.photographer }}
+              </a>
+            </div>
+          </article>
+        </section>
+
+        <div class="status" v-if="isLoading">Loading...</div>
+        <div class="status" v-if="!hasMore && photos.length">No more photos.</div>
+        <div ref="sentinel" style="height: 1px"></div>
+      </main>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
